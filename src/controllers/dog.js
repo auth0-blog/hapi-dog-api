@@ -89,15 +89,19 @@ exports.update = (req, h) => {
  */
 exports.remove = (req, h) => {
   
-  return Dog.findById(req.params.id).exec(function (err, dog) {
+  return Dog.findById(req.params.id).exec().then((dog) => {
 
-    if (err) return { dberror: err };
-    if (!dog) return { message: 'Dog not found' };
+    if (!dog) return { err: 'Dog not found' };
 
-    dog.remove(function (err) {
-      if (err) return { dberror: err };
+    dog.remove();
 
-      return { success: true };
-    });
+  }).then((data) => {
+
+    return { message: "Dog deleted successfully" };
+
+  }).catch((err) => {
+
+    return { err: err };
+    
   });
 }
